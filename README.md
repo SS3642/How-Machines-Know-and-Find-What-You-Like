@@ -83,4 +83,4 @@ See [Final_Project](Final_Project) for the brief and grading.
 ## Mentors
 
 - Sanidhya Saraf
-- (co-mentor)
+- Saanvi Walvekar
