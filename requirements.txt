@@ -1,0 +1,8 @@
+# For running locally. On Colab, each notebook installs what it needs.
+numpy
+pandas
+matplotlib
+scikit-learn
+scikit-surprise
+sentence-transformers
+streamlit

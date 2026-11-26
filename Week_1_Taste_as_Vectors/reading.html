@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 1: Similarity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a friendly film-club handout, curious not textbook
+   IDEA a cinema programme: a "ticket" strip of tabs, each tab a reel of the story
+   PICTURE the taste plane: every friend is an arrow; you move your own arrow and see who points your way
+   COLOUR screen red #c8102e dominant band, popcorn yellow #ffcf3a accent, white ground, ink #17120f; night #140d0e
+   TYPE Archivo 800 display + Source Sans 3 text, JetBrains Mono for code
+   LAYOUT laptop: title + picture band in red, tabs strip, one reading column with side figures; phone: stack title, picture, controls */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#140d0e);--ink:light-dark(#17120f,#f4ecea);--mute:light-dark(#5d5452,#b9aeac);--red:#c8102e;--redbg:light-dark(#c8102e,#5a0715);--pop:#ffcf3a;--panel:light-dark(#fbf3f1,#211617);--line:light-dark(#e6d9d6,#3a2a2b);--blue:light-dark(#1f4fd8,#7ea0ff);--green:light-dark(#0f8a4b,#5fd498)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 "Source Sans 3",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif;line-height:1.08;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,5vw,50px);font-weight:800}
+h2{font-size:clamp(26px,3.4vw,34px);font-weight:800;margin-bottom:12px}
+h3{font-size:20px;font-weight:800;margin:26px 0 8px}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px)}
+.hero{background:var(--redbg);color:#fff}
+.hero .wrap{max-width:1240px;margin:auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,4vw,48px);align-items:center}
+.hero p{max-width:34em;color:#ffe9ec}
+.tag{display:inline-block;background:var(--pop);color:#17120f;font-weight:600;padding:2px 10px;border-radius:4px;margin-bottom:14px;font-size:15px}
+.fig{position:relative;min-height:360px;background:#fff1;border-radius:12px}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.ctl{display:grid;grid-template-columns:auto minmax(0,1fr) 2.5em;gap:6px 12px;align-items:center;margin-top:14px;font-size:15px}
+input[type=range]{width:100%;height:44px;accent-color:var(--pop)}
+.readout{margin-top:10px;font-size:16px;background:#0003;border-radius:8px;padding:10px 14px}
+.readout b{color:var(--pop)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:2px solid var(--line)}
+nav .scroll{display:flex;gap:6px;max-width:1240px;margin:auto;padding:8px max(5vw,16px);overflow-x:auto}
+nav button{flex:none;font:600 15px "Source Sans 3",sans-serif;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--red);border-color:var(--red);color:#fff}
+nav button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
+main{max-width:1240px;margin:auto}
+section[role=tabpanel]{display:none}
+section[role=tabpanel].on{display:block}
+.cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,4vw,48px);align-items:start}
+.read{max-width:42em}
+.note{background:var(--panel);border-left:4px solid var(--pop);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.eng{background:var(--panel);border-radius:10px;padding:14px 18px;margin:14px 0}
+.eng .f{font:16px "JetBrains Mono",monospace;overflow-x:auto;white-space:nowrap;padding-bottom:4px}
+.eng ul{margin:8px 0 0;padding-left:20px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hl td{background:color-mix(in srgb,var(--pop) 28%,transparent)}
+.step{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:10px;margin:10px 0}
+.step i{font-style:normal;font-weight:800;font-family:Archivo,sans-serif;background:var(--red);color:#fff;border-radius:50%;width:2em;height:2em;display:grid;place-items:center;font-size:15px}
+pre{background:light-dark(#1b1416,#0b0708);color:#f4ecea;border-radius:10px;padding:16px;overflow-x:auto;font:14px/1.55 "JetBrains Mono",monospace}
+pre .c{color:#ffcf3a}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin:10px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600;min-height:28px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15em,1fr));gap:14px}
+.card{background:var(--panel);border-radius:12px;padding:16px 18px}
+.card h3{margin-top:0}
+.mini{min-height:300px;background:var(--panel)}
+.sample{font-size:14px;color:var(--mute)}
+svg text{font-family:"Source Sans 3",sans-serif;font-size:14px}
+@media(max-width:820px){.hero .wrap,.cols{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){table{font-size:14px}th,td{padding:6px 5px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="band hero">
+  <div class="wrap">
+    <div>
+      <span class="tag">WiDS 2026 · Week 1 of 4</span>
+      <h1>Similarity is everything</h1>
+      <p>Netflix picking your next movie and ChatGPT picking its next word come down to the same question: <b>what is closest to this?</b> This week we turn taste into numbers and measure how close two people are.</p>
+      <p>Try it: move your own arrow and see which friend's taste points the same way as yours.</p>
+    </div>
+    <div>
+      <div class="fig" id="plane" aria-label="Taste plane: each friend is an arrow"><svg></svg></div>
+      <div class="ctl">
+        <label for="yx">Drama-comedy</label><input id="yx" type="range" min="0" max="5" step="0.5" value="2"><span id="yxv">2</span>
+        <label for="yy">Sci-fi</label><input id="yy" type="range" min="0" max="5" step="0.5" value="4"><span id="yyv">4</span>
+      </div>
+      <div class="readout" id="ro"></div>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="Week 1 sections"><div class="scroll" role="tablist" id="tabs"></div></nav>
+
+<main>
+
+<section role="tabpanel" id="t-story" class="band">
+  <div class="cols">
+    <div class="read">
+      <h2>The hostel movie problem</h2>
+      <p>Four friends in your wing have rated four movies, from 1 (hated it) to 5 (loved it). On Friday, Aarav asks: <i>"What should I watch next?"</i></p>
+      <p>You could just tell him the most popular movie. But Kabir loves sci-fi and Aarav doesn't, so "most popular" may be wrong for Aarav. A better idea is to <b>find the friend whose taste is most like Aarav's and borrow their opinion.</b></p>
+      <p>That one idea is the core of recommendation systems. To use it we need two things:</p>
+      <div class="step"><i>1</i><div>A way to write taste as <b>numbers</b> (a vector).</div></div>
+      <div class="step"><i>2</i><div>A way to measure <b>how close</b> two vectors are.</div></div>
+      <div class="note">In weeks 3 and 4 the same two ideas come back for words. An LLM turns every word into a vector and asks which words are close. So this week is the foundation for both halves of the project.</div>
+    </div>
+    <div class="card">
+      <h3>By the end of this week you can</h3>
+      <ul>
+        <li>Turn a ratings table into vectors with pandas</li>
+        <li>Compute distance and cosine similarity, first by hand and then in NumPy</li>
+        <li>Build two recommenders: "most popular" and "friend most like you"</li>
+        <li>Explain why one of them is better, with numbers</li>
+      </ul>
+      <p class="sample">Friends, ratings and the movie "Jawan" in the examples are made-up sample data.</p>
+    </div>
+  </div>
+</section>
+
+<section role="tabpanel" id="t-vectors" class="band">
+  <div class="cols">
+    <div class="read">
+      <h2>Taste becomes a list of numbers</h2>
+      <p>Write each friend's ratings in the same movie order. Each row is now a <b>vector</b>, which is just an ordered list of numbers. Aarav is <code>[5, 4, 1, 1]</code>.</p>
+      <div class="scroll"><table id="ratings"></table></div>
+      <p>Notice two things before any maths:</p>
+      <ul>
+        <li><b>Aarav and Meera</b> like the same movies and rate them in a similar way.</li>
+        <li><b>Zoya</b> likes the same movies as Aarav but is a strict rater. Her "love" is a 3, not a 5.</li>
+      </ul>
+      <p>A good similarity measure should say Zoya is like Aarav. Keep that in mind. It's the twist in the next tab.</p>
+    </div>
+    <div>
+      <h3>Why only 2 numbers in the picture above?</h3>
+      <p>We can't draw 4 dimensions. So the picture at the top squeezes each friend into 2 numbers: their average rating for the two drama-comedies, and their average for the two sci-fi movies. The maths works the same for 4 numbers, or for 4,000.</p>
+      <div class="scroll"><table id="squeezed"></table></div>
+    </div>
+  </div>
+</section>
+
+<section role="tabpanel" id="t-close" class="band">
+  <h2>Two ways to measure "close"</h2>
+  <div class="cols">
+    <div class="read">
+      <h3>Way 1: distance (a ruler)</h3>
+      <div class="eng"><div class="f">distance(a, b) = √( (a₁−b₁)² + (a₂−b₂)² + … )</div>
+        <ul><li>Subtract each pair of ratings, square the gaps, add them up, then take the square root.</li><li>Small distance = close. 0 means identical.</li></ul></div>
+      <p>Aarav vs Meera: gaps are (5−4, 4−5, 1−1, 1−2) = (1, −1, 0, −1). Squared: 1+1+0+1 = 3. √3 ≈ <b>1.73</b>.</p>
+      <p>Aarav vs Zoya: gaps (2, 2, 0, 0). Squared: 4+4 = 8. √8 ≈ <b>2.83</b>. The ruler says Zoya is further away, only because she gives lower scores.</p>
+
+      <h3>Way 2: cosine similarity (a compass)</h3>
+      <div class="eng"><div class="f">cos(a, b) = (a · b) / ( |a| × |b| )</div>
+        <ul>
+          <li><b>a · b</b> ("a dot b"): multiply matching ratings and add. Aarav·Zoya = 5×3 + 4×2 + 1×1 + 1×1 = 25.</li>
+          <li><b>|a|</b> ("length of a"): √(sum of squares). |Aarav| = √(25+16+1+1) = √43 ≈ 6.56. |Zoya| = √15 ≈ 3.87.</li>
+          <li>Divide: 25 ÷ (6.56 × 3.87) ≈ <b>0.98</b>.</li>
+          <li>It only cares about <b>direction</b>, not length. 1 = same direction, 0 = nothing in common.</li>
+        </ul></div>
+      <div class="note">The compass ignores how generous someone is and only asks whether they point the same way. That's why Zoya wins under cosine.</div>
+    </div>
+    <div>
+      <h3>Everyone vs Aarav</h3>
+      <div class="scroll"><table id="vsA"></table></div>
+      <p class="sample">Highlighted: the closest friend under each measure. Computed live from the ratings table.</p>
+      <details><summary>Quick check: who is closest to Kabir by cosine?</summary><p id="kabirAns"></p></details>
+    </div>
+  </div>
+</section>
+
+<section role="tabpanel" id="t-rec" class="band">
+  <h2>Your first two recommenders</h2>
+  <p class="read">A new movie, <b>Jawan</b>, is out. Meera, Kabir and Zoya have seen it. Aarav hasn't. Should we recommend it to him?</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Recommender A: most popular</h3>
+      <p>Average each movie's rating across everyone, then show the top one to everyone.</p>
+      <div class="scroll"><table id="pop"></table></div>
+      <p>The problem: Kabir rated 3 Idiots a 1, yet he'd get it as his top pick. The same list goes to everyone, so it's personal to no one.</p>
+    </div>
+    <div class="card">
+      <h3>Recommender B: friends like you</h3>
+      <p>Predict Aarav's rating as a <b>weighted average</b>: friends whose taste is closer to his (higher cosine) get more say.</p>
+      <div class="eng"><div class="f">guess = Σ (similarity × their rating) / Σ similarity</div>
+        <ul><li>Σ means "add up over all friends who saw it".</li></ul></div>
+      <div class="scroll"><table id="pred"></table></div>
+      <p id="predline"></p>
+    </div>
+  </div>
+  <div class="note read">Puzzle for the discussion session: Zoya gave Jawan a 3. Coming from her, is that low or high? Her average is only 1.75. Next week we fix this by comparing each rating with the person's own average, which is called <b>mean-centering</b>.</div>
+</section>
+
+<section role="tabpanel" id="t-words" class="band">
+  <div class="cols">
+    <div class="read">
+      <h2>Sneak peek: words are vectors too</h2>
+      <p>Score each word on two made-up features: "is it a fruit?" and "is it a tech company?". Each word becomes an arrow, just like each friend did.</p>
+      <div class="scroll"><table id="words"></table></div>
+      <p><b>Apple</b> sits between the two groups, because it's both a fruit and a company. A plain word vector can't tell which one you mean.</p>
+      <p>LLMs fix this by looking at the <b>context</b>, the words around it. "I ate an apple" pushes the arrow toward fruit. "Apple's new phone" pushes it toward tech. That trick is called <b>attention</b>, and it's week 3.</p>
+      <p class="sample">Feature scores are made up to show the idea. Real models learn hundreds of features nobody names.</p>
+    </div>
+    <div class="fig mini" id="wplane" aria-label="Word vectors plot"><svg></svg></div>
+  </div>
+</section>
+
+<section role="tabpanel" id="t-code" class="band">
+  <div class="cols">
+    <div class="read">
+      <h2>The same thing in Python</h2>
+      <p>Everything above in about 20 lines. Run it in Colab and check that the numbers match the tables.</p>
+<pre><span class="c"># Week 1 starter: similarity between friends</span>
+import numpy as np
+import pandas as pd
+
+<span class="c"># Each row is a friend, each column a movie (ratings 1-5)</span>
+ratings = pd.DataFrame(
+    [[5, 4, 1, 1],
+     [4, 5, 1, 2],
+     [1, 1, 5, 4],
+     [3, 2, 1, 1]],
+    index=["Aarav", "Meera", "Kabir", "Zoya"],
+    columns=["3 Idiots", "Dangal", "Interstellar", "Inception"])
+
+def cosine(a, b):
+    <span class="c"># dot product: multiply matching numbers, then add</span>
+    top = np.dot(a, b)
+    <span class="c"># length of each vector: square root of sum of squares</span>
+    bottom = np.linalg.norm(a) * np.linalg.norm(b)
+    return top / bottom
+
+aarav = ratings.loc["Aarav"].values
+for name in ratings.index:
+    if name == "Aarav":
+        continue
+    other = ratings.loc[name].values
+    dist = np.linalg.norm(aarav - other)   <span class="c"># the ruler</span>
+    cos = cosine(aarav, other)             <span class="c"># the compass</span>
+    print(name, "distance:", round(dist, 2), "cosine:", round(cos, 3))</pre>
+    </div>
+    <div>
+      <h3>Expected output</h3>
+<pre>Meera distance: 1.73 cosine: 0.967
+Kabir distance: 7.07 cosine: 0.419
+Zoya distance: 2.83 cosine: 0.984</pre>
+      <h3>Try changing</h3>
+      <ul>
+        <li>Make Zoya even stricter: <code>[2, 1, 1, 1]</code>. What happens to each number?</li>
+        <li>Add yourself as a fifth row. Who's your closest friend?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section role="tabpanel" id="t-tasks" class="band">
+  <h2>This week's checklist</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Watch and read (about 3 hours)</h3>
+      <ul>
+        <li>3Blue1Brown, <i>Essence of Linear Algebra</i>, chapters 1 and 9 (vectors, dot products)</li>
+        <li>Kaggle Learn: <i>Pandas</i> course, lessons 1–4</li>
+        <li>Google for Developers: <i>Recommendation Systems</i> course, intro and "Candidate generation overview"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Notebook (about 3 hours)</h3>
+      <ul>
+        <li>Load MovieLens (small) with pandas, and find the most-rated and best-rated movies</li>
+        <li>Build Recommender A (popularity, with a minimum of 50 ratings)</li>
+        <li>Build Recommender B for one user using cosine similarity</li>
+        <li>Plot a histogram of ratings with plain matplotlib</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Submit</h3>
+      <ul>
+        <li>The completed notebook</li>
+        <li>Answers to the 3 questions below</li>
+        <li>One paragraph: a recommendation you got recently that felt wrong, and why</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Check yourself</h3>
+  <details><summary>1. Why does cosine say Zoya is like Aarav when distance doesn't?</summary><p>Cosine only looks at direction. Zoya's ratings go up and down in the same places as Aarav's, just smaller. Distance also counts the size of the numbers, so her lower scores look like different taste.</p></details>
+  <details><summary>2. Two users rate everything 5 and everything 1. What is their cosine similarity?</summary><p>1. Both vectors point in exactly the same direction (one is 5 times the other). That's a weakness: neither tells us anything about taste. Mean-centering in week 2 fixes it.</p></details>
+  <details><summary>3. Why can't "most popular" ever be personal?</summary><p>It uses no information about the person asking, so everyone gets the same list. It still works as a <b>baseline</b> for a new user we know nothing about, which is the cold-start problem.</p></details>
+  <div class="note read"><b>For mentors, how this page is built:</b> one story → tiny numbers you can do by hand → each formula read out in plain English → a picture you can play with → the same thing in code → check questions. Every later week can follow this template.</div>
+  <p class="sample">Course and video names are from general knowledge. Check the links before release.</p>
+</section>
+
+</main>
+
+<script>
+{
+const movies=["3 Idiots","Dangal","Interstellar","Inception"];
+const friends=[
+ {n:"Aarav",r:[5,4,1,1],jawan:null,c:"#ffcf3a"},
+ {n:"Meera",r:[4,5,1,2],jawan:5,c:"#ffffff"},
+ {n:"Kabir",r:[1,1,5,4],jawan:2,c:"#8fd3ff"},
+ {n:"Zoya",r:[3,2,1,1],jawan:3,c:"#ffb3c0"}];
+const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+const len=a=>Math.sqrt(dot(a,a));
+const cos=(a,b)=>dot(a,b)/(len(a)*len(b));
+const dist=(a,b)=>Math.sqrt(a.reduce((s,v,i)=>s+(v-b[i])**2,0));
+const f2=x=>x.toFixed(2), f3=x=>x.toFixed(3);
+const sq=r=>[(r[0]+r[1])/2,(r[2]+r[3])/2];
+const $=id=>document.getElementById(id);
+
+/* tabs */
+const tabs=[["t-story","1. The story"],["t-vectors","2. Taste as numbers"],["t-close","3. Measuring close"],["t-rec","4. First recommenders"],["t-words","5. Words too"],["t-code","6. Code"],["t-tasks","7. This week"]];
+const tl=$("tabs");
+tl.innerHTML=tabs.map(t=>`<button role="tab" id="b-${t[0]}" aria-controls="${t[0]}">${t[1]}</button>`).join("");
+function show(id){
+  if(!tabs.some(t=>t[0]===id))id=tabs[0][0];
+  tabs.forEach(t=>{$(t[0]).classList.toggle("on",t[0]===id);$("b-"+t[0]).setAttribute("aria-selected",t[0]===id)});
+  if(id==="t-words")drawWords();
+}
+tl.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const id=b.id.slice(2);history.replaceState(null,"","#"+id.slice(2));show(id)});
+tl.addEventListener("keydown",e=>{if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft")return;const bs=[...tl.querySelectorAll("button")];let i=bs.findIndex(b=>b.getAttribute("aria-selected")==="true");i=(i+(e.key==="ArrowRight"?1:bs.length-1))%bs.length;bs[i].focus();bs[i].click()});
+const fromHash=()=>show("t-"+(location.hash.slice(1)||"story"));
+window.addEventListener("hashchange",fromHash);fromHash();
+
+/* tables */
+$("ratings").innerHTML=`<tr><th>Friend</th>${movies.map(m=>`<th class="n">${m}</th>`).join("")}</tr>`+friends.map(f=>`<tr><td>${f.n}</td>${f.r.map(v=>`<td class="n">${v}</td>`).join("")}</tr>`).join("");
+$("squeezed").innerHTML=`<tr><th>Friend</th><th class="n">Drama-comedy avg</th><th class="n">Sci-fi avg</th></tr>`+friends.map(f=>{const s=sq(f.r);return `<tr><td>${f.n}</td><td class="n">${s[0]}</td><td class="n">${s[1]}</td></tr>`}).join("");
+const A=friends[0].r, others=friends.slice(1);
+const bestD=others.reduce((b,f)=>dist(A,f.r)<dist(A,b.r)?f:b), bestC=others.reduce((b,f)=>cos(A,f.r)>cos(A,b.r)?f:b);
+$("vsA").innerHTML=`<tr><th>Friend</th><th class="n">Distance (lower = closer)</th><th class="n">Cosine (higher = closer)</th></tr>`+others.map(f=>`<tr><td>${f.n}</td><td class="n" style="${f===bestD?'background:color-mix(in srgb,var(--pop) 35%,transparent)':''}">${f2(dist(A,f.r))}</td><td class="n" style="${f===bestC?'background:color-mix(in srgb,var(--pop) 35%,transparent)':''}">${f3(cos(A,f.r))}</td></tr>`).join("");
+const K=friends[2].r, kr=friends.filter(f=>f.n!=="Kabir").map(f=>[f.n,cos(K,f.r)]).sort((a,b)=>b[1]-a[1]);
+$("kabirAns").textContent=`${kr[0][0]} at ${f3(kr[0][1])}, but that's still low. Kabir has no close match in this group. ${kr.map(k=>k[0]+" "+f3(k[1])).join(", ")}.`;
+
+const avgs=movies.map((m,i)=>[m,friends.reduce((s,f)=>s+f.r[i],0)/friends.length]).sort((a,b)=>b[1]-a[1]);
+$("pop").innerHTML=`<tr><th>Movie</th><th class="n">Average</th></tr>`+avgs.map((a,i)=>`<tr class="${i===0?'hl':''}"><td>${a[0]}</td><td class="n">${f2(a[1])}</td></tr>`).join("");
+let num=0,den=0;
+const rows=others.map(f=>{const s=cos(A,f.r);num+=s*f.jawan;den+=s;return `<tr><td>${f.n}</td><td class="n">${f3(s)}</td><td class="n">${f.jawan}</td><td class="n">${f2(s*f.jawan)}</td></tr>`});
+$("pred").innerHTML=`<tr><th>Friend</th><th class="n">Similarity</th><th class="n">Jawan</th><th class="n">Sim × rating</th></tr>`+rows.join("")+`<tr class="hl"><td>Total</td><td class="n">${f3(den)}</td><td></td><td class="n">${f2(num)}</td></tr>`;
+$("predline").innerHTML=`Guess for Aarav = ${f2(num)} ÷ ${f3(den)} = <b>${f2(num/den)}</b> out of 5. Kabir's low 2 counts for little because his taste is far from Aarav's.`;
+
+/* word table */
+const words=[{n:"mango",v:[0.95,0.05]},{n:"banana",v:[0.9,0.1]},{n:"apple",v:[0.9,0.8]},{n:"google",v:[0.05,0.95]},{n:"microsoft",v:[0.1,0.9]}];
+const ap=words[2].v;
+$("words").innerHTML=`<tr><th>Word</th><th class="n">Fruit</th><th class="n">Tech</th><th class="n">Cosine with apple</th></tr>`+words.map(w=>`<tr><td>${w.n}</td><td class="n">${w.v[0]}</td><td class="n">${w.v[1]}</td><td class="n">${w.n==="apple"?"—":f2(cos(ap,w.v))}</td></tr>`).join("");
+
+/* shared arrow plot */
+function arrows(svg,W,H,pts,max,axX,axY,opt){
+  const m={l:44,r:18,t:16,b:40},pw=W-m.l-m.r,ph=H-m.t-m.b,sc=Math.min(pw,ph)/max;
+  const X=v=>m.l+v*sc,Y=v=>m.t+ph-v*sc;
+  let s=`<defs>${pts.map((p,i)=>`<marker id="${opt.id}${i}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="${p.c}"/></marker>`).join("")}</defs>`;
+  for(let g=0;g<=max;g+=max/5){s+=`<line x1="${X(0)}" x2="${X(max)}" y1="${Y(g)}" y2="${Y(g)}" stroke="${opt.grid}" stroke-width="1"/><line y1="${Y(0)}" y2="${Y(max)}" x1="${X(g)}" x2="${X(g)}" stroke="${opt.grid}" stroke-width="1"/>`;if(W>=420)s+=`<text x="${X(g)}" y="${Y(0)+18}" text-anchor="middle" fill="${opt.ink}">${+g.toFixed(1)}</text><text x="${X(0)-8}" y="${Y(g)+5}" text-anchor="end" fill="${opt.ink}">${+g.toFixed(1)}</text>`}
+  s+=`<text x="${X(max)}" y="${H-4}" text-anchor="end" fill="${opt.ink}" font-weight="600">${axX} →</text><text x="${X(0)+6}" y="${m.t+12}" fill="${opt.ink}" font-weight="600">↑ ${axY}</text>`;
+  if(opt.arc){const [a,b]=opt.arc,ra=Math.atan2(a[1],a[0]),rb=Math.atan2(b[1],b[0]),R=sc*1.1;s+=`<path d="M${X(Math.cos(ra)*R/sc)},${Y(Math.sin(ra)*R/sc)} A${R},${R} 0 0 ${ra>rb?1:0} ${X(Math.cos(rb)*R/sc)},${Y(Math.sin(rb)*R/sc)}" fill="none" stroke="${opt.arcc}" stroke-width="3"/>`}
+  pts.forEach((p,i)=>{s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(p.v[0])}" y2="${Y(p.v[1])}" stroke="${p.c}" stroke-width="${p.w||3}" marker-end="url(#${opt.id}${i})"/>`;
+    const lx=X(p.v[0])+(p.dx||8),ly=Y(p.v[1])+(p.dy||-6);s+=`<text x="${lx}" y="${ly}" fill="${p.c}" font-weight="600" style="paint-order:stroke;stroke:${opt.halo};stroke-width:4px">${p.n}</text>`});
+  svg.innerHTML=s;
+}
+const plane=$("plane").querySelector("svg");
+function drawPlane(){
+  const W=plane.clientWidth,H=plane.clientHeight,yx=+$("yx").value,yy=+$("yy").value;
+  $("yxv").textContent=yx;$("yyv").textContent=yy;
+  const pts=friends.map(f=>({n:f.n,v:sq(f.r),c:f.c,dy:f.n==="Zoya"?16:f.n==="Meera"?-10:-6,dx:f.n==="Meera"?-14:8}));
+  const you=[yx||0.01,yy||0.01];
+  const ranked=pts.map(p=>({n:p.n,c:cos(you,p.v),d:dist(you,p.v),v:p.v})).sort((a,b)=>b.c-a.c);
+  const near=ranked[0],byD=[...ranked].sort((a,b)=>a.d-b.d)[0];
+  pts.push({n:"You",v:you,c:"#ffcf3a",w:5,dx:10,dy:4});
+  pts[0].c="#ffe9ec";
+  arrows(plane,W,H,pts,5,"Drama-comedy","Sci-fi",{id:"p",grid:"#ffffff26",ink:"#ffd9de",halo:"#8a0a20",arc:[you,near.v],arcc:"#ffcf3a"});
+  $("ro").innerHTML=`Compass (cosine) says you're most like <b>${near.n}</b> (${f3(near.c)}). Ruler (distance) says <b>${byD.n}</b> (${f2(byD.d)}).`+(near.n!==byD.n?" They disagree, and tab 3 explains why.":"");
+}
+const wsvg=$("wplane").querySelector("svg");
+function drawWords(){
+  const W=wsvg.clientWidth,H=wsvg.clientHeight;if(!W)return;
+  const css=getComputedStyle(document.body),ink=css.getPropertyValue("--mute"),bg=css.backgroundColor;
+  const col={mango:"#0f8a4b",banana:"#0f8a4b",apple:"#c8102e",google:"#1f4fd8",microsoft:"#1f4fd8"};
+  const off={mango:[8,16],banana:[8,-6],apple:[8,-6],google:[8,-2],microsoft:[-70,14]};
+  arrows(wsvg,W,H,words.map(w=>({n:w.n,v:w.v,c:col[w.n],dx:off[w.n][0],dy:off[w.n][1]})),1,"Fruit","Tech",{id:"w",grid:"#8882",ink,halo:bg});
+}
+["yx","yy"].forEach(id=>$(id).addEventListener("input",drawPlane));
+const ro1=new ResizeObserver(drawPlane);ro1.observe(plane);
+const ro2=new ResizeObserver(drawWords);ro2.observe(wsvg);
+}
+</script>
+</body>
+</html>

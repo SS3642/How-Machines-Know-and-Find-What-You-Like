@@ -1,0 +1,20 @@
+# Python and Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+
+# Secrets
+.env
+*.key
+
+# Data (downloaded by notebooks)
+data/*
+!data/README.md
+
+# Solutions live in a private repo
+solutions/
+
+# OS
+.DS_Store
+Thumbs.db
