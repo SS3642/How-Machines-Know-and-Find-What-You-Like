@@ -285,7 +285,6 @@ Zoya distance: 2.83 cosine: 0.984</pre>
   <details><summary>1. Why does cosine say Zoya is like Aarav when distance doesn't?</summary><p>Cosine only looks at direction. Zoya's ratings go up and down in the same places as Aarav's, just smaller. Distance also counts the size of the numbers, so her lower scores look like different taste.</p></details>
   <details><summary>2. Two users rate everything 5 and everything 1. What is their cosine similarity?</summary><p>1. Both vectors point in exactly the same direction (one is 5 times the other). That's a weakness: neither tells us anything about taste. Mean-centering in week 2 fixes it.</p></details>
   <details><summary>3. Why can't "most popular" ever be personal?</summary><p>It uses no information about the person asking, so everyone gets the same list. It still works as a <b>baseline</b> for a new user we know nothing about, which is the cold-start problem.</p></details>
-  <div class="note read"><b>For mentors, how this page is built:</b> one story → tiny numbers you can do by hand → each formula read out in plain English → a picture you can play with → the same thing in code → check questions. Every later week can follow this template.</div>
   <p class="sample">Course and video names are from general knowledge. Check the links before release.</p>
 </section>
 
